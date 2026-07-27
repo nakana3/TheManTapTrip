@@ -39,6 +39,7 @@ export default function SavedRoute() {
   const handleSetVisited = async (spotId) => {
     try {
       const result = await setVisited(spotId);
+      setSpots((prev) => prev.map((s) => (s.id === spotId ? { ...s, isVisited: 1 } : s)));
       toast.success(result.message || "行き済みを登録しました");
     } catch {
       // useSpot側でエラー通知を表示する。
