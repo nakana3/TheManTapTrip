@@ -18,9 +18,7 @@ use Log;
 
 class AuthenticatedSessionController extends Controller
 {
-    public function __construct(private ApiResponse $apiResponse)
-    {
-    }
+    public function __construct(private ApiResponse $apiResponse) {}
 
     /**
      * メールアドレスでアカウント登録
@@ -60,7 +58,6 @@ class AuthenticatedSessionController extends Controller
                 "アカウント登録に成功しました！",
                 201
             );
-
         } catch (Exception $e) {
 
             // エラーをログファイルに出力
@@ -114,7 +111,6 @@ class AuthenticatedSessionController extends Controller
                 'ログインに成功しました。',
                 200
             );
-
         } catch (Exception $e) {
             // エラーをログファイルに出力
             Log::error("ログインに失敗しました。", [
@@ -191,7 +187,6 @@ class AuthenticatedSessionController extends Controller
             "ログイン中のユーザー情報を取得しました。",
             200,
         );
-
     }
 
     /*
@@ -211,11 +206,14 @@ class AuthenticatedSessionController extends Controller
     */
     private function userResponse(User $user): array
     {
+
+        $googleAuth = $user->userAuths->firstWhere('provider', 'google');
+        $emailAuth = $user->userAuths->firstWhere('provider', 'email');
         return [
             'id' => $user->id,
             'displayName' => $user->displayName,
-            'email' => $user->userAuths
-                        ->firstWhere('provider', 'email')?->email,
+            'email' => $emailAuth?->email ?? $googleAuth?->email,
+            'avatarUrl' => $user?->avatarUrl,
         ];
     }
 }
