@@ -30,7 +30,8 @@ const CardDisplay = ({ places = [] }) => {
       toast.success(result.message);
     } catch {}
   };
-
+  console.log(places);
+  
   return (
     <div className="card-display-container">
       {displayPlaces.map((place, index) => {

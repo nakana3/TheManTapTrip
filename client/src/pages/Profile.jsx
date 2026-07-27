@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 import { updateDisplayName } from "../services/userService";
@@ -15,12 +15,25 @@ function Profile() {
   const [statusMessage, setStatusMessage] = useState("");
   const [statusType, setStatusType] = useState("success");
   const [avatarLoadError, setAvatarLoadError] = useState(false);
+  const [avatarPreview, setAvatarPreview] = useState(null);
   const [showConfirm, setShowConfirm] = useState(false);
 
+  const avatarInputRef = useRef(null);
+  const avatarObjectUrlRef = useRef(null);
   const [editingField, setEditingField] = useState(null);
   const [draftValue, setDraftValue] = useState("");
 
   const hasChanges = formData.displayName !== savedData.displayName;
+
+  const displayedAvatar = avatarPreview || formData.avatarUrl || null;
+
+  useEffect(() => {
+    return () => {
+      if (avatarObjectUrlRef.current) {
+        URL.revokeObjectURL(avatarObjectUrlRef.current);
+      }
+    };
+  }, []);
 
   const startEditing = (field) => {
     setEditingField(field);
@@ -86,7 +99,38 @@ function Profile() {
       setIsSaving(false);
     }
   };
+  const setAvatar = (event) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
 
+    const allowedTypes = ["image/jpeg", "image/png", "image/webp"];
+    const maxFileSize = 5 * 1024 * 1024;
+
+    if (!allowedTypes.includes(file.type)) {
+      setStatusType("error");
+      setStatusMessage("JPG、PNG、WEBP形式の画像を選択してください。");
+      event.target.value = "";
+      return;
+    }
+
+    if (file.size > maxFileSize) {
+      setStatusType("error");
+      setStatusMessage("画像サイズは5MB以下にしてください。");
+      event.target.value = "";
+      return;
+    }
+
+    const nextPreview = URL.createObjectURL(file);
+    if (avatarObjectUrlRef.current) {
+      URL.revokeObjectURL(avatarObjectUrlRef.current);
+    }
+
+    avatarObjectUrlRef.current = nextPreview;
+    setAvatarPreview(nextPreview);
+    setAvatarLoadError(false);
+    setStatusMessage("");
+    event.target.value = "";
+  };
   const handleCancelSave = () => setShowConfirm(false);
 
   const handleBack = () => navigate(-1);
@@ -116,16 +160,28 @@ function Profile() {
       {/* アバター */}
       <div className="flex flex-col items-center pt-4 pb-6">
         <div className="relative">
-          {formData.avatarUrl && !avatarLoadError ? (
-            <img className="w-20 h-20 rounded-full object-cover" src={formData.avatarUrl} alt="プロフィール画像" onError={() => setAvatarLoadError(true)} />
+          {displayedAvatar && !avatarLoadError ? (
+            <img className="w-20 h-20 rounded-full object-cover" src={displayedAvatar} alt="プロフィール画像" onError={() => setAvatarLoadError(true)} />
           ) : (
             <div className="w-20 h-20 rounded-full bg-slate-200 flex items-center justify-center text-slate-500">
               <User size={32} />
             </div>
           )}
-          <span className="absolute bottom-0 right-0 w-6 h-6 rounded-full bg-sky-400 text-white flex items-center justify-center border-2 border-white">
+          <input
+            ref={avatarInputRef}
+            type="file"
+            accept="image/png,image/jpeg,image/webp"
+            onChange={setAvatar}
+            className="hidden"
+          />
+          <button
+            type="button"
+            aria-label="プロフィール画像を変更"
+            className="absolute bottom-0 right-0 w-6 h-6 rounded-full bg-sky-400 text-white flex items-center justify-center border-2 border-white p-0"
+            onClick={() => avatarInputRef.current?.click()}
+          >
             <Camera size={12} />
-          </span>
+          </button>
         </div>
         <h2 className="mt-3 text-[17px] font-semibold text-slate-800">{formData.displayName}</h2>
         <p className="text-[13px] text-slate-400 mt-0.5">週末の散歩が好き</p>
