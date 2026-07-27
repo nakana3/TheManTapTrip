@@ -134,9 +134,7 @@ function Profile() {
   const handleCancelSave = () => setShowConfirm(false);
 
   const handleBack = () => navigate(-1);
-  const handleMenuClick = (label) => {
-    console.log(`${label} がクリックされました`);
-  };
+  const handleMenuClick = () => {};
 
   const handleLogout = async () => {
     // セッション破棄とローカル状態のクリアを行い、トップへ戻る

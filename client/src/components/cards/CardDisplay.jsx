@@ -30,8 +30,6 @@ const CardDisplay = ({ places = [] }) => {
       toast.success(result.message);
     } catch {}
   };
-  console.log(places);
-  
   return (
     <div className="card-display-container">
       {displayPlaces.map((place, index) => {
@@ -50,8 +48,8 @@ const CardDisplay = ({ places = [] }) => {
         const matchScore = place.matchScore; // マッチ度があれば取得
 
         // 画像URLの生成（前回のVITE_GOOGLE_PLACES_API_KEYを使用！）
-        const imageUrl = place.photoReference
-          ? `https://places.googleapis.com/v1/${place.photoReference}/media?key=${import.meta.env.VITE_GOOGLE_PLACES_API_KEY}&maxHeightPx=400&maxWidthPx=400`
+        const imageUrl = place.photoUrl
+          ? place.photoUrl
           : noImage;
 
         // カード全体をクリックした時の処理（詳細画面へ遷移）

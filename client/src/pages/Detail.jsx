@@ -8,18 +8,11 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import noImage from "../assets/no_image.jpg";
 
-const GOOGLE_PLACES_API_KEY = import.meta.env.VITE_GOOGLE_PLACES_API_KEY;
-
-function buildPhotoUrl(photoReference) {
-  return `https://places.googleapis.com/v1/${photoReference}/media?key=${GOOGLE_PLACES_API_KEY}&maxHeightPx=400&maxWidthPx=400`;
-}
-
 function Detail({ spot, onBack }) {
-  // 画像URLは spot.photoReference が変わったときだけ再計算する
+  // バックエンドから返された画像URLをそのまま使用する
   const imageUrl = useMemo(() => {
-    if (!spot?.photoReference) return noImage;
-    return buildPhotoUrl(spot.photoReference);
-  }, [spot?.photoReference]);
+    return spot?.photoUrl || noImage;
+  }, [spot?.photoUrl]);
   // primaryType と types をまとめ、null・重複を除去して表示用リストを作る（全件表示）
   const typeList = useMemo(() => {
     const merged = [spot?.primaryType, ...(spot?.types || [])].filter(Boolean);
