@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Bookmark, Sparkles } from "lucide-react";
+import { Bookmark, Loader2, Sparkles } from "lucide-react";
 import SaveListCard from "../components/cards/SaveListCard";
 import TypeFilterBar from "../components/filters/TypeFilterBar";
 import { useSpot } from "../hooks/useSpot";
@@ -12,6 +12,7 @@ export default function SavedRoute() {
   const [activeFilter, setActiveFilter] = useState(null);
   const { getSpots, deleteSpot, setVisited } = useSpot();
   const [primaryTypes, setPrimaryTypes] = useState([]);
+  const [isLoadingSpots, setIsLoadingSpots] = useState(true);
 
   useEffect(() => {
     const loadSpots = async () => {
@@ -24,6 +25,9 @@ export default function SavedRoute() {
 
         setPrimaryTypes(types);
       } catch {}
+      finally {
+        setIsLoadingSpots(false);
+      }
     };
     loadSpots();
     return () => {};
@@ -63,7 +67,12 @@ export default function SavedRoute() {
       </div>
 
       {/* メインエリア */}
-      {isEmpty ? (
+      {isLoadingSpots ? (
+        <div className="filter-loading">
+          <Loader2 className="filter-loading-spinner" />
+          <span>保存したスポットを読み込み中...</span>
+        </div>
+      ) : isEmpty ? (
         <div className="flex-1 flex flex-col justify-center gap-4 px-4 pb-10">
           <div className="flex flex-col items-center justify-center gap-2 py-10 rounded-2xl border border-slate-100">
             <Bookmark size={28} className="text-slate-300" />

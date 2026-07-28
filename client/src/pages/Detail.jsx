@@ -27,9 +27,24 @@ function Detail({ spot, onBack }) {
 
   if (!spot) return null;
 
-  const { sName, address = "住所情報なし", rating = "評価なし", priceLevel, summary = "説明はありません。", directionUrl, goodForChildren, menuForChildren, hasParking } = spot;
+  const {
+    sName,
+    address = "住所情報なし",
+    rating: rawRating,
+    priceLevel,
+    price,
+    summary = "説明はありません。",
+    directionUrl,
+    goodForChildren,
+    menuForChildren,
+    hasParking,
+  } = spot;
 
   const title = sName || "名称不明";
+  const rating = rawRating ?? "評価なし";
+  const displayPriceLevel = priceLevel ?? price;
+  const latitude = Number(spot.lat);
+  const longitude = Number(spot.long);
 
   // true の設備だけをバッジ表示する
   const features = [
@@ -57,10 +72,10 @@ function Detail({ spot, onBack }) {
               <FaStar className="star-icon" />
               {rating}
             </span>
-            {priceLevel && (
+            {displayPriceLevel && (
               <>
                 <Separator orientation="vertical" className="meta-divider" />
-                <span className="detail-meta-item">{priceLevel}</span>
+                <span className="detail-meta-item">{displayPriceLevel}</span>
               </>
             )}
           </div>
@@ -116,9 +131,13 @@ function Detail({ spot, onBack }) {
           </CardHeader>
           <CardContent>
             <div className="map-placeholder">
-              <Map mapId={import.meta.env.VITE_GOOGLE_MAP_ID} defaultCenter={{ lat: spot.lat, lng: spot.long }} defaultZoom={16} style={{ width: "100%", height: "100%" }}>
-                <AdvancedMarker position={{ lat: spot.lat, lng: spot.long }} />
-              </Map>
+              {Number.isFinite(latitude) && Number.isFinite(longitude) ? (
+                <Map mapId={import.meta.env.VITE_GOOGLE_MAP_ID} defaultCenter={{ lat: latitude, lng: longitude }} defaultZoom={16} style={{ width: "100%", height: "100%" }}>
+                  <AdvancedMarker position={{ lat: latitude, lng: longitude }} />
+                </Map>
+              ) : (
+                <p>地図情報がありません。</p>
+              )}
             </div>
           </CardContent>
         </Card>

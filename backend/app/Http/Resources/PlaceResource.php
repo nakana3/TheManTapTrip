@@ -51,6 +51,8 @@ class PlaceResource extends JsonResource
             'hasParking'      => $this->resource['hasParking'] ?? false,
             'summary'         => $this->resource['summary'] ?? '説明はありません。',
             'photoUrl'        => $this->resource['photoUrl'] ?? null,
+            'photoReference' => $this->resource['photoReference'] ?? null,
+            'directionUrl'    => $this->resource['directionUrl'] ?? null,
             'matchScore'      => $this->resource['matchScore'] ?? 0,
             'isVisited'       => $this->resource['isVisited'] ?? false,
         ];
