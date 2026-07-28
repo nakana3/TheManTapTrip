@@ -41,11 +41,6 @@ function Detail({ spot, initialSaved = false, onBack }) {
   const imageUrl = useMemo(() => {
     return spot?.photoUrl || noImage;
   }, [spot?.photoUrl]);
-  // primaryType と types をまとめ、null・重複を除去して表示用リストを作る（全件表示）
-  const typeList = useMemo(() => {
-    const merged = [spot?.primaryType, ...(spot?.types || [])].filter(Boolean);
-    return [...new Set(merged)].splice(0, 10); // 最大10件まで表示
-  }, [spot?.primaryType, spot?.types]);
 
   // 画像読み込み失敗時、毎レンダリングで関数を作り直さないようにする
   const handleImageError = useCallback((e) => {
@@ -118,11 +113,7 @@ function Detail({ spot, initialSaved = false, onBack }) {
           </button>
         </div>
         {/* DBの保存状態に応じて、枠線または塗りつぶしのハートを表示する */}
-        <IconButton
-          icon={isSaved ? <FaHeart color="#e53e3e" /> : <FaRegHeart color="#94a3b8" />}
-          variant="bookmark"
-          onClick={handleBookmark}
-        />
+        <IconButton icon={isSaved ? <FaHeart color="#e53e3e" /> : <FaRegHeart color="#94a3b8" />} variant="bookmark" onClick={handleBookmark} />
 
         {/* タイトルと評価を画像に重ねて表示 */}
         <div className="hero-overlay-text">
@@ -187,30 +178,6 @@ function Detail({ spot, initialSaved = false, onBack }) {
               </div>
             )}
           </section>
-        )}
-
-        {/* カテゴリー（ボタン風だが押せない・横スクロールで無限ループ） */}
-        {typeList.length > 0 && (
-          <>
-            {/* 横スクロール（自動再生なし・末尾で停止） */}
-            <div className="detail-type-scroll">
-              {typeList.map((type, index) => {
-                const isPrimary = index === 0;
-                return (
-                  <Button
-                    key={type}
-                    variant={isPrimary ? "default" : "secondary"}
-                    size="sm"
-                    tabIndex={-1}
-                    aria-disabled="true"
-                    className={isPrimary ? "detail-type-button detail-type-button--primary" : "detail-type-button"}
-                  >
-                    {type}
-                  </Button>
-                );
-              })}
-            </div>
-          </>
         )}
 
         {/* APIから取得したスポットの説明文を詳細画面にも表示する */}
