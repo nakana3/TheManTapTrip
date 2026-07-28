@@ -11,7 +11,7 @@ export default function RegisterRoute() {
       setAuthenticatedUser(user);
     }
 
-    navigate(-1, { replace: true });
+    navigate("/home", { replace: true });
   };
 
   return <Register onRegisterSuccess={handleRegisterSuccess} />;
