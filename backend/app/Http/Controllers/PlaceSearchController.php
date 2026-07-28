@@ -53,7 +53,7 @@ class PlaceSearchController extends Controller
 
             // 行き済みを最後に並び変える
             if ($user !== null) {
-                $result = $this->placesSorter->sort($result);
+                $result = $this->placesSorter->sort($result)->all();
             }
 
             // 結果が空だった場合

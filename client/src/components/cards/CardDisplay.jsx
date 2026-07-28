@@ -24,12 +24,10 @@ const CardDisplay = ({ places = [] }) => {
 
     try {
       const result = await saveSpot(place);
-
-      const { spot } = result;
-
       toast.success(result.message);
     } catch {}
   };
+
   return (
     <div className="card-display-container">
       {displayPlaces.map((place, index) => {
@@ -47,7 +45,7 @@ const CardDisplay = ({ places = [] }) => {
         const primaryTag = place.types?.[0] || place.primaryType || "スポット";
         const matchScore = place.matchScore; // マッチ度があれば取得
 
-        // 画像URLの生成（前回のVITE_GOOGLE_PLACES_API_KEYを使用！）
+        // 画像URLの生成
         const imageUrl = place.photoUrl
           ? place.photoUrl
           : noImage;

@@ -48,6 +48,8 @@ services:
       DB_DATABASE: ${MYSQL_DATABASE}
       DB_USERNAME: ${MYSQL_USER}
       DB_PASSWORD: ${MYSQL_PASSWORD}
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
     networks:
       - app-network
   mysql:
@@ -59,8 +61,8 @@ services:
       MYSQL_DATABASE: ${MYSQL_DATABASE}
       MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
-    # ports:
-    #   - "33060:3306"
+    ports:
+      - "33060:3306"
     volumes:
       - mysql_data:/var/lib/mysql
     healthcheck:
@@ -84,4 +86,3 @@ volumes:
 networks:
   app-network:
     driver: bridge
-

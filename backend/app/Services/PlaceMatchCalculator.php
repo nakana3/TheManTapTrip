@@ -99,9 +99,9 @@ class PlaceMatchCalculator
             $formattedPlaces[$key]['matchScore'] = max(0, min(100, $totalScore));
         }
 
-        // 計算が終わった後、マッチ度が低すぎるノイズ店舗をここで除外する
+        // 計算が終わった後、マッチ度が30点未満のノイズ店舗をここで除外する
         $formattedPlaces = array_filter($formattedPlaces, function ($place) {
-            // 目的(purpose)の点数や他の要素が全く噛み合わず、20点未満になったスポットは非表示にする
+            // 目的(purpose)の点数や他の要素が全く噛み合わず、30点未満になったスポットは非表示にする
             return $place['matchScore'] >= 30;
         });
 
@@ -119,7 +119,7 @@ class PlaceMatchCalculator
     private function isPriceLevelMatch(string $userPrice, string $googlePrice): bool
     {
         // Googleの返却値例: 'PRICE_LEVEL_FREE', 'PRICE_LEVEL_INEXPENSIVE', 'PRICE_LEVEL_MODERATE' など
-        // あなたのフロントエンドの実装（"1", "2" など）に合わせてマッピングを調整してください
+        // 現在の回答値はGoogleのPriceLevel文字列だが、旧形式の数値も許容する
         $map = [
             '1' => 'PRICE_LEVEL_INEXPENSIVE',
             '2' => 'PRICE_LEVEL_MODERATE',
@@ -127,6 +127,6 @@ class PlaceMatchCalculator
             '4' => 'PRICE_LEVEL_VERY_EXPENSIVE',
         ];
 
-        return ($map[$userPrice] ?? '') === $googlePrice;
+        return ($map[$userPrice] ?? $userPrice) === $googlePrice;
     }
 }

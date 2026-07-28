@@ -7,8 +7,7 @@ export default function DetailRoute() {
   const location = useLocation();
   const { spotId } = useParams();
   const { getSpotById } = usePlaces();
-  const spot = getSpotById(spotId);
-  
+  const spot = getSpotById(spotId) || location.state?.spot;
 
   if (!spot) {
     return <Navigate to="/recommend" replace />;

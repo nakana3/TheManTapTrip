@@ -7,11 +7,6 @@ import React from "react";
 import { Trash2, Star, CheckCircle2 } from "lucide-react";
 import { FaPersonWalkingLuggage } from "react-icons/fa6";
 import noImage from "../../assets/no_image.jpg";
-const GOOGLE_PLACES_API_KEY = import.meta.env.VITE_GOOGLE_PLACES_API_KEY;
-
-const buildPhotoUrl = (photoReference) => {
-  return `https://places.googleapis.com/v1/${photoReference}/media?key=${GOOGLE_PLACES_API_KEY}&maxHeightPx=400&maxWidthPx=400`;
-};
 
 /**
  * 保存済みスポットカード
@@ -25,7 +20,7 @@ function SaveListCard({ spot, onClick, onUnsave, onSetVisited }) {
   if (!spot) return null;
 
   const title = spot.sName || "名称不明のスポット";
-  const imageUrl = spot.photoReference ? buildPhotoUrl(spot.photoReference) : noImage;
+  const imageUrl = spot.photoUrl ? spot.photoUrl : noImage;
   const primaryType = spot.primaryType;
   const rating = spot.rating ? Number(spot.rating) : null;
   const price = spot.price;
