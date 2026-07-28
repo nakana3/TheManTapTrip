@@ -11,6 +11,7 @@ export default function RegisterRoute() {
       setAuthenticatedUser(user);
     }
 
+    // 登録完了後は、戻る履歴に依存せずホーム画面へ移動する
     navigate("/home", { replace: true });
   };
 
