@@ -6,7 +6,7 @@
  * @Update 26/06/12
  */
 
-const BASE_URL = "/api/v1";
+const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 export const searchPlaces = async (searchData) => {
   const hasAnswers = searchData?.answers && Object.keys(searchData.answers).length > 0;
